@@ -2,6 +2,7 @@
   "name": "combokeys-context",
   "version": "0.0.1",
   "description": "Wrapper around Combokeys that provides support for context/scope.",
+  "repository": "https://github.com/MitMaro/combokeys-context",
   "main": "src/Combokeys-Context.js",
   "scripts": {
     "test": "istanbul cover -- ./node_modules/.bin/_mocha"
@@ -15,6 +16,7 @@
     "browserify": "^9.0.3",
     "chai": "^2.1.1",
     "combokeys": "^2.3.0",
+    "coveralls": "^2.11.2",
     "istanbul": "^0.3.7",
     "mocha": "^2.1.0",
     "sinon": "^1.13.0",
