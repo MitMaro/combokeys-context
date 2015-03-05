@@ -1,0 +1,4 @@
+--require mocha-bootstrap.js
+--recursive
+--check-leaks
+--reporter spec
