@@ -1,0 +1,23 @@
+{
+  "name": "combokeys-context",
+  "version": "0.0.1",
+  "description": "Wrapper around Combokeys that provides support for context/scope.",
+  "main": "src/index.js",
+  "scripts": {
+    "watch": "",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "combokeys"
+  ],
+  "author": "Tim Oram <mitmaro@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "browserify": "^9.0.3",
+    "combokeys": "^2.3.0",
+    "uglify-js": "^2.4.16",
+    "watchify": "^2.4.0"
+  },
+  "dependencies": {
+  }
+}
