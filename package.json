@@ -2,7 +2,7 @@
   "name": "combokeys-context",
   "version": "0.0.1",
   "description": "Wrapper around Combokeys that provides support for context/scope.",
-  "main": "src/index.js",
+  "main": "src/Combokeys-Context.js",
   "scripts": {
     "watch": "",
     "test": "echo \"Error: no test specified\" && exit 1"
