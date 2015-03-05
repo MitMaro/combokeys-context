@@ -9,6 +9,10 @@ This is a light wrapper about ComboKeys that provides context or scope to the ke
 
 With a polyfill for Object.keys, almost any browser.
 
+## Documentation
+
+[JSDocs](http://www.mitmaro.ca/combokeys-context/)
+
 ##License
 
 Combokeys Context is released under the MIT license. See LICENSE.

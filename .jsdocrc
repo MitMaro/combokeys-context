@@ -1,0 +1,13 @@
+{
+  "tags": {
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "source": {
+    "include": ["src/"]
+  },
+  "plugins": [],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": true
+  }
+}
