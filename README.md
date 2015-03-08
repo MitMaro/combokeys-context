@@ -16,7 +16,7 @@ browsers that works with ComboKeys as long as `Object.keys` is polyfilled where 
 
 ### Full Usage
 
-```
+```javascript
 var ComboKeys = require('combokeys');
 var ComboKeysContext = require('combokeys-context');
 
@@ -63,6 +63,6 @@ comboKeysContext.reset();
 ### Full API Docs
 [ComboKeys Context JSDocs](http://www.mitmaro.ca/combokeys-context/)
 
-##License
+## License
 
 Combokeys Context is released under the MIT license. See LICENSE.
