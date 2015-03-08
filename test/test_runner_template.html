@@ -1,0 +1,51 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ComboKeys Context - Mocha Tests</title>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.min.css" />
+</head>
+<body>
+<div id="mocha"></div>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mocha/2.1.0/mocha.min.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/chai/2.1.0/chai.min.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/sinon.js/1.7.3/sinon-min.js"></script>
+<script type="text/javascript" src="{%=o.htmlWebpackPlugin.assets.vendor%}"></script>
+<script type="text/javascript" src="{%=o.htmlWebpackPlugin.assets.bootstrap%}"></script>
+<script type="text/javascript">
+	mocha.setup('bdd');
+</script>
+<script type="text/javascript" src="{%=o.htmlWebpackPlugin.assets.tests%}"></script>
+<script type="text/javascript">
+	window.expect = chai.expect;
+
+	window.onload = function(){
+
+		mocha.checkLeaks();
+		mocha.globals(['mochaResults', 'expect']);
+		var runner = mocha.run();
+
+		var failedTests = [];
+		runner.on('end', function(){
+			window.mochaResults = runner.stats;
+			window.mochaResults.reports = failedTests;
+		});
+
+		runner.on('fail', logFailure);
+
+		function logFailure(test, err){
+
+			var flattenTitles = function(test){
+				var titles = [];
+				while (test.parent.title){
+					titles.push(test.parent.title);
+					test = test.parent;
+				}
+				return titles.reverse();
+			};
+
+			failedTests.push({name: test.title, result: false, message: err.message, stack: err.stack, titles: flattenTitles(test) });
+		}
+	};
+</script>
+</body>
+</html>
