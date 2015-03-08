@@ -12,6 +12,10 @@ bindings.
 Tested against the latest version of Google Chrome, latest Firefox, and Internet Explorer 10 and 11. Should work with all
 browsers that works with ComboKeys as long as `Object.keys` is polyfilled where needed.
 
+## Install
+
+    npm install combokeys-context
+
 ## Documentation
 
 ### Full Usage
