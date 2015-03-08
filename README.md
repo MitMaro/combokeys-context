@@ -4,15 +4,64 @@
 [![Build Status](https://travis-ci.org/MitMaro/combokeys-context.svg)](https://travis-ci.org/MitMaro/combokeys-context)
 [![Coverage Status](https://coveralls.io/repos/MitMaro/combokeys-context/badge.svg?branch=master)](https://coveralls.io/r/MitMaro/combokeys-context?branch=master)
 
-This is a light wrapper about ComboKeys that provides context or scope to the key bindings.
+This is a light wrapper about [ComboKeys](https://github.com/PolicyStat/combokeys) that provides context aware key
+bindings.
 
 ## Compatibility
 
-With a polyfill for Object.keys, almost any browser.
+Tested against the latest version of Google Chrome, latest Firefox, and Internet Explorer 10 and 11. Should work with all
+browsers that works with ComboKeys as long as `Object.keys` is polyfilled where needed.
 
 ## Documentation
 
-[JSDocs](http://www.mitmaro.ca/combokeys-context/)
+### Full Usage
+
+```
+var ComboKeys = require('combokeys');
+var ComboKeysContext = require('combokeys-context');
+
+var comboKeys = new ComboKeys(document);
+var comboKeysContext = new ComboKeysContext(comboKeys);
+
+// define callbacks
+var callbackGlobal = function(evt, key) {
+	// `this` is a reference to comboKeys
+	console.log('Global: ' + key);
+}
+var callbackContext = function(evt, key) {
+	console.log('Context A: ' + key);
+}
+
+// bind in the global context
+comboKeysContext.bind('alt+a', callback);
+comboKeysContext.bind('alt+b', callback);
+
+// bind into a context
+comboKeysContext.bind('alt+b', 'contextA', callback);
+
+// alt-a press would result in Global: alt+a
+// alt-b press would result in Global: alt+b
+
+comboKeysContext.switchContext('contextA');
+// alt-a press would result in Global: alt+a
+// alt-b press would result in Context A: alt+b
+
+// return to global only state
+comboKeysContext.clearContext();
+
+// unbind the global, leaving contextA along
+comboKeysContext.unbind('alt+b');
+// unbind contextA
+comboKeysContext.unbind('alt+b', 'contextA');
+// unbind all will remove global and all context bindings
+comboKeysContext.unbindAll('alt+b');
+
+// reset will remove all bindings, will also reset ComboKeys
+comboKeysContext.reset();
+```
+
+### Full API Docs
+[ComboKeys Context JSDocs](http://www.mitmaro.ca/combokeys-context/)
 
 ##License
 
