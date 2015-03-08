@@ -1,6 +1,6 @@
 {
   "name": "combokeys-context",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Tim Oram <mitmaro@gmail.com>",
   "contributors": [],
   "description": "Wrapper around Combokeys that provides support for context/scope.",
