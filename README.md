@@ -1,7 +1,7 @@
 # ComboKeys Context
 
 [![Dependency Status](https://david-dm.org/MitMaro/combokeys-context.svg)](https://david-dm.org/MitMaro/combokeys-context)
-[![Build Status](https://travis-ci.org/MitMaro/combokeys-context.svg)](https://travis-ci.org/MitMaro/combokeys-context)
+[![Build Status](https://travis-ci.org/MitMaro/combokeys-context.svg?branch=master)](https://travis-ci.org/MitMaro/combokeys-context)
 [![Coverage Status](https://coveralls.io/repos/MitMaro/combokeys-context/badge.svg?branch=master)](https://coveralls.io/r/MitMaro/combokeys-context?branch=master)
 
 This is a light wrapper about [ComboKeys](https://github.com/PolicyStat/combokeys) that provides context aware key
