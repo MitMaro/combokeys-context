@@ -1,9 +1,9 @@
 var isArray = require('./util/isArray');
 
 function wrapHandler(key, evt, combo) {
-	if (this._context) {
+	if (this._context && this._bindings[key].contexts[this._context]) {
 		this._bindings[key].contexts[this._context].call(this._comboKeys, evt, combo);
-	} else {
+	} else if (this._bindings[key].global) {
 		this._bindings[key].global.call(this._comboKeys, evt, combo);
 	}
 }

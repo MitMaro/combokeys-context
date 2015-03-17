@@ -433,5 +433,26 @@ describe('Combo Keys context', function() {
 			context._bindings[key].handler(evt, key);
 			expect(contextCallback).to.be.calledWith(evt, key);
 		});
+
+		it('calls function in global scope without global scope registered', function() {
+			var contextCallback = sinon.stub();
+			var evt = 'my event';
+			var key = 'a';
+
+			context._register(key, 'A', contextCallback);
+			context._bindings[key].handler(evt, key);
+			expect(contextCallback).to.not.be.called;
+		});
+
+		it('calls function in scope without scope registered', function() {
+			var globalCallback = sinon.stub();
+			var evt = 'my event';
+			var key = 'a';
+
+			context._register(key, null, globalCallback);
+			context._context = 'A';
+			context._bindings[key].handler(evt, key);
+			expect(globalCallback).to.be.calledWith(evt, key);
+		});
 	});
 });
