@@ -1,7 +1,7 @@
 {
   "name": "combokeys-context",
   "version": "1.0.1",
-  "author": "Tim Oram <mitmaro@gmail.com>",
+  "author": "Tim Oram <mitmaro@gmail.com> (http://www.mitmaro.ca)",
   "contributors": [],
   "description": "Wrapper around Combokeys that provides support for context/scope.",
   "license": "MIT",
