@@ -96,7 +96,7 @@ describe('Combo Keys context', function() {
 		});
 	});
 
-	describe('#bind', function() {
+	describe('.bind', function() {
 		var context;
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
@@ -138,7 +138,7 @@ describe('Combo Keys context', function() {
 		});
 	});
 
-	describe('#unbind', function() {
+	describe('.unbind', function() {
 		var context;
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
@@ -347,7 +347,7 @@ describe('Combo Keys context', function() {
 		});
 	});
 
-	describe('#unbindAll', function() {
+	describe('.unbindAll', function() {
 		var context;
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
