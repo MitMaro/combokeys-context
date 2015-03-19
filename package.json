@@ -17,7 +17,14 @@
     "test": "istanbul cover -- ./node_modules/.bin/_mocha"
   },
   "keywords": [
-    "combokeys", "plugin"
+    "combokeys",
+    "plugin",
+    "events",
+    "context",
+    "scope",
+    "browser",
+    "shortcuts",
+    "mousetrap"
   ],
   "devDependencies": {
     "chai": "^2.1.1",
