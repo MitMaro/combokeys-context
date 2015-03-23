@@ -8,6 +8,12 @@
 This is a light wrapper about [ComboKeys](https://github.com/PolicyStat/combokeys) that provides context aware key
 bindings.
 
+## Version 1.x Info
+
+For the current stable version, please see the [v1.x branch](https://github.com/MitMaro/combokeys-context/tree/v1.x). The
+master branch is for the work in the upcoming version 2 which will have plugin support as well as a more powerful context
+system.
+
 ## Compatibility
 
 Tested against the latest version of Google Chrome, latest Firefox, and Internet Explorer 10 and 11. Should work with all
