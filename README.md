@@ -66,7 +66,7 @@ comboKeysContext.reset();
 ```
 
 ### Full API Docs
-[ComboKeys Context JSDocs](http://www.mitmaro.ca/combokeys-context/documentation/latest/)
+[ComboKeys Context JSDocs](http://www.mitmaro.ca/combokeys-context/documentation/v1.x/)
 
 ## License
 
