@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = {
 	isArray: require('lodash/lang/isArray')
 };
@@ -20,7 +22,8 @@ function wrapHandler(key, evt, combo) {
 
 	if (this._context && this._bindings[key].contexts[this._context]) {
 		this._bindings[key].contexts[this._context].call(this._comboKeys, evt, combo);
-	} else if (this._bindings[key].global) {
+	}
+	else if (this._bindings[key].global) {
 		this._bindings[key].global.call(this._comboKeys, evt, combo);
 	}
 
@@ -59,7 +62,7 @@ function wrapHandler(key, evt, combo) {
  * @param comboKeys An instance of Combokeys
  * @constructor
  */
-var Context = function(comboKeys) {
+function Context(comboKeys) {
 	if (typeof comboKeys === 'undefined') {
 		throw new Error('CombokeysContext: Constructor requires an instance of Combokeys');
 	}
@@ -73,7 +76,7 @@ var Context = function(comboKeys) {
 	this._activePlugins = [];
 
 	this._comboKeys.stopCallback = this._stopCallback.bind(this);
-};
+}
 
 /**
  * Force preventDefault to be called
@@ -143,9 +146,9 @@ Context.ALLOW_CALLBACK_FORCE = noForce;
  * @param callback The callback to call when key is pressed in context
  * @param action The event action, see [Mousetrap.bind single]{@link http://craig.is/killing/mice#api.bind.single}
  */
-Context.prototype.bind = function(key, context, callback, action) {
+Context.prototype.bind = function bind(key, context, callback, action) {
 	var i;
-	var keys = _.isArray(key) ? key : [key];
+	var keys = _.isArray(key)? key: [key];
 
 	// if context is a function we assume it's the callback and shift params
 	if (typeof context === 'function') {
@@ -164,14 +167,14 @@ Context.prototype.bind = function(key, context, callback, action) {
  * @param key The key combination, see [Mousetrap.bind]{@link http://craig.is/killing/mice#api.bind}
  * @param [context] A context for the unbinding, if not provided it will unbind the global scope
  */
-Context.prototype.unbind = function(key, context) {
+Context.prototype.unbind = function unbind(key, context) {
 	var i;
 	var binding;
-	var keys = _.isArray(key) ? key : [key];
+	var keys = _.isArray(key)? key: [key];
 
 	for (i = 0; i < keys.length; ++i) {
 		// skip bindings that don't exist
-		if (!(keys[i] in this._bindings)) {
+		if ('undefined' === typeof this._bindings[keys[i]]) {
 			continue;
 		}
 
@@ -179,7 +182,8 @@ Context.prototype.unbind = function(key, context) {
 
 		if (context) {
 			delete binding.contexts[context];
-		} else {
+		}
+		else {
 			binding.global = null;
 		}
 
@@ -194,15 +198,15 @@ Context.prototype.unbind = function(key, context) {
  * Unbind all actions for a key, both global and contextual
  * @param key The key combination, see [Mousetrap.bind]{@link http://craig.is/killing/mice#api.bind}
  */
-Context.prototype.unbindAll = function(key) {
+Context.prototype.unbindAll = function unbindAll(key) {
 
 	var i;
-	var keys = _.isArray(key) ? key : [key];
+	var keys = _.isArray(key)? key: [key];
 
 	for (i = 0; i < keys.length; ++i) {
 
 		// skip bindings that don't exist
-		if (!(keys[i] in this._bindings)) {
+		if ('undefined' === typeof this._bindings[keys[i]]) {
 			continue;
 		}
 
@@ -213,7 +217,7 @@ Context.prototype.unbindAll = function(key) {
 /**
  * Reset this instance back to the default state, removing all bound keys
  */
-Context.prototype.reset = function() {
+Context.prototype.reset = function reset() {
 	this._comboKeys.reset();
 	this._bindings = {};
 	this._context = null;
@@ -226,7 +230,7 @@ Context.prototype.reset = function() {
  * Switch the active context
  * @param context The active context
  */
-Context.prototype.switchContext = function(context) {
+Context.prototype.switchContext = function switchContext(context) {
 	if (typeof context === 'undefined') {
 		throw new Error('CombokeysContext: switchContext expects a context to be passed');
 	}
@@ -237,7 +241,7 @@ Context.prototype.switchContext = function(context) {
 /**
  * Clear the content, setting to global only
  */
-Context.prototype.clearContext = function() {
+Context.prototype.clearContext = function clearContext() {
 	this._context = null;
 	this._combinePlugins();
 };
@@ -247,12 +251,12 @@ Context.prototype.clearContext = function() {
  *
  * @param {ContextPlugin} plugin A plugin to be registered
  */
-Context.prototype.registerPlugin = function(plugin, context) {
-	if (typeof context === 'undefined') {
+Context.prototype.registerPlugin = function registerPlugin(plugin, context) {
+	if ('undefined' === typeof context) {
 		this._plugins.global.push(plugin);
 	}
 	else {
-		if (typeof this._plugins.contexts[context] === 'undefined') {
+		if ('undefined' === typeof this._plugins.contexts[context]) {
 			this._plugins.contexts[context] = [];
 		}
 		this._plugins.contexts[context].push(plugin);
@@ -260,13 +264,13 @@ Context.prototype.registerPlugin = function(plugin, context) {
 	this._combinePlugins();
 };
 
-Context.prototype._deleteBinding = function(key) {
+Context.prototype._deleteBinding = function _deleteBinding(key) {
 	this._comboKeys.unbind(key);
 	delete this._bindings[key];
 };
 
-Context.prototype._register = function(key, context, callback, action) {
-	if (!(key in this._bindings)) {
+Context.prototype._register = function _register(key, context, callback, action) {
+	if ('undefined' === typeof this._bindings[key]) {
 		this._bindings[key] = {
 			handler: wrapHandler.bind(this, key),
 			global: null,
@@ -277,15 +281,17 @@ Context.prototype._register = function(key, context, callback, action) {
 
 	if (context) {
 		this._bindings[key].contexts[context] = callback;
-	} else {
+	}
+	else {
 		this._bindings[key].global = callback;
 	}
 };
 
-Context.prototype._stopCallback = function(evt, element, combo) {
+Context.prototype._stopCallback = function _stopCallback(evt, element, combo) {
 	var i;
 	var result;
 	var stopCallback = no;
+
 	for (i = 0; i < this._activePlugins.length; i++) {
 		if (typeof this._activePlugins[i].stopCallback === 'function') {
 			result = this._activePlugins[i].stopCallback(evt, eventTarget(evt), combo, this._context);
@@ -305,15 +311,16 @@ Context.prototype._stopCallback = function(evt, element, combo) {
 	return stopCallback === yes;
 };
 
-Context.prototype._combinePlugins = function() {
+Context.prototype._combinePlugins = function _combinePlugins() {
+	var i = 0;
+	var length;
 	var globalPluginLength = this._plugins.global.length;
 	var contextPluginLength = 0;
-	var i = 0;
 
 	if (this._context && typeof this._plugins.contexts[this._context] !== 'undefined') {
 		contextPluginLength = this._plugins.contexts[this._context].length;
 	}
-	var length = Math.max(globalPluginLength, contextPluginLength);
+	length = Math.max(globalPluginLength, contextPluginLength);
 
 	this._activePlugins = [];
 	while (i < length) {

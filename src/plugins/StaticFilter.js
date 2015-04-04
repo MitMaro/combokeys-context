@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Plugin that will return the values provided. Great for setting defaults.
  * @implements {ContextPlugin}
@@ -6,21 +8,21 @@
  * @param {Context.StopCallbackReturn=} stopCallback Value to return for the {@link Plugin#stopCallback} function
  * @constructor
  */
-var StaticPlugin = function(preventDefault, stopPropagation, stopCallback) {
+function StaticPlugin(preventDefault, stopPropagation, stopCallback) {
 	this._preventDefault = preventDefault;
 	this._stopPropagation = stopPropagation;
 	this._stopCallback = stopCallback;
-};
+}
 
-StaticPlugin.prototype.stopCallback = function() {
+StaticPlugin.prototype.stopCallback = function stopCallback() {
 	return this._stopCallback;
 };
 
-StaticPlugin.prototype.stopPropagation = function() {
+StaticPlugin.prototype.stopPropagation = function stopPropagation() {
 	return this._stopPropagation;
 };
 
-StaticPlugin.prototype.preventDefault = function() {
+StaticPlugin.prototype.preventDefault = function preventDefault() {
 	return this._preventDefault;
 };
 

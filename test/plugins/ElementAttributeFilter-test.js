@@ -1,3 +1,7 @@
+// jscs:disable disallowAnonymousFunctions
+/* eslint-disable no-unused-expressions */
+'use strict';
+
 var Filter = require('../../src/plugins/ElementAttributeFilter');
 
 describe('ElementAttributeFilter', function() {
@@ -6,20 +10,22 @@ describe('ElementAttributeFilter', function() {
 	beforeEach(function() {
 		elementStub = {
 			getAttribute: sinon.stub()
-		}
+		};
 	});
 
 	describe('#_attributesMatch', function() {
 		describe('with matchAll option', function() {
 			var options;
+
 			beforeEach(function() {
 				options = {
 					matchAll: true
-				}
+				};
 			});
 
 			it('should handle no attributes', function() {
 				var filter = new Filter({}, options);
+
 				expect(filter._attributesMatch(elementStub)).to.be.true;
 			});
 
@@ -29,6 +35,7 @@ describe('ElementAttributeFilter', function() {
 					b: 'B',
 					c: 'C'
 				}, options);
+
 				elementStub.getAttribute.onCall(0).returns('A');
 				elementStub.getAttribute.onCall(1).returns('B');
 				elementStub.getAttribute.onCall(2).returns('C');
@@ -41,6 +48,7 @@ describe('ElementAttributeFilter', function() {
 					b: ['B', 'BB', 'BBB'],
 					c: ['C', 'CC', 'CCC']
 				}, options);
+
 				elementStub.getAttribute.onCall(0).returns('AA');
 				elementStub.getAttribute.onCall(1).returns('BBB');
 				elementStub.getAttribute.onCall(2).returns('C');
@@ -53,6 +61,7 @@ describe('ElementAttributeFilter', function() {
 					b: 'B',
 					c: 'C'
 				}, options);
+
 				elementStub.getAttribute.onCall(0).returns('A');
 				elementStub.getAttribute.onCall(1).returns('D');
 				elementStub.getAttribute.onCall(2).returns('C');
@@ -64,6 +73,7 @@ describe('ElementAttributeFilter', function() {
 		describe('without matchAll option', function() {
 			it('should return undefined when there are no attributes, default options', function() {
 				var filter = new Filter({});
+
 				expect(filter._attributesMatch(elementStub)).to.be.false;
 			});
 
@@ -73,6 +83,7 @@ describe('ElementAttributeFilter', function() {
 					b: 'B',
 					c: 'C'
 				});
+
 				elementStub.getAttribute.onCall(0).returns('D');
 				elementStub.getAttribute.onCall(1).returns('D');
 				elementStub.getAttribute.onCall(2).returns('D');
@@ -85,6 +96,7 @@ describe('ElementAttributeFilter', function() {
 					b: ['B', 'BB', 'BBB'],
 					c: ['C', 'CC', 'CCC']
 				});
+
 				elementStub.getAttribute.onCall(0).returns('D');
 				elementStub.getAttribute.onCall(1).returns('BB');
 				elementStub.getAttribute.onCall(2).returns('D');
@@ -97,6 +109,7 @@ describe('ElementAttributeFilter', function() {
 					b: 'B',
 					c: 'C'
 				});
+
 				elementStub.getAttribute.onCall(0).returns('D');
 				elementStub.getAttribute.onCall(1).returns('B');
 				elementStub.getAttribute.onCall(2).returns('C');
@@ -105,11 +118,12 @@ describe('ElementAttributeFilter', function() {
 		});
 	});
 
-	describe('ContextPlugin interface', function () {
+	describe('ContextPlugin interface', function() {
 		describe('#stopCallback', function() {
 			it('should handle undefined stopCallback return', function() {
 				var attributeMatchStub = sinon.stub();
 				var filter = new Filter({});
+
 				filter._attributesMatch = attributeMatchStub;
 				expect(filter.stopCallback()).to.be.undefined;
 				expect(attributeMatchStub).to.not.be.called;
@@ -120,6 +134,7 @@ describe('ElementAttributeFilter', function() {
 				var filter = new Filter({}, {
 					stopCallback: 'some value'
 				});
+
 				filter._attributesMatch = attributeMatchStub;
 				expect(filter.stopCallback()).to.equal('some value');
 				expect(attributeMatchStub).to.be.called;
@@ -130,6 +145,7 @@ describe('ElementAttributeFilter', function() {
 				var filter = new Filter({}, {
 					stopCallback: 'some value'
 				});
+
 				filter._attributesMatch = attributeMatchStub;
 				expect(filter.stopCallback()).to.be.undefined;
 				expect(attributeMatchStub).to.be.called;
@@ -140,6 +156,7 @@ describe('ElementAttributeFilter', function() {
 			it('should handle undefined preventDefault return', function() {
 				var attributeMatchStub = sinon.stub();
 				var filter = new Filter({});
+
 				filter._attributesMatch = attributeMatchStub;
 				expect(filter.preventDefault()).to.be.undefined;
 				expect(attributeMatchStub).to.not.be.called;
@@ -150,6 +167,7 @@ describe('ElementAttributeFilter', function() {
 				var filter = new Filter({}, {
 					preventDefault: 'some value'
 				});
+
 				filter._attributesMatch = attributeMatchStub;
 				expect(filter.preventDefault()).to.equal('some value');
 				expect(attributeMatchStub).to.be.called;
@@ -160,6 +178,7 @@ describe('ElementAttributeFilter', function() {
 				var filter = new Filter({}, {
 					preventDefault: 'some value'
 				});
+
 				filter._attributesMatch = attributeMatchStub;
 				expect(filter.preventDefault()).to.be.undefined;
 				expect(attributeMatchStub).to.be.called;
@@ -170,6 +189,7 @@ describe('ElementAttributeFilter', function() {
 			it('should handle undefined stopPropagation return', function() {
 				var attributeMatchStub = sinon.stub();
 				var filter = new Filter({});
+
 				filter._attributesMatch = attributeMatchStub;
 				expect(filter.stopPropagation()).to.be.undefined;
 				expect(attributeMatchStub).to.not.be.called;
@@ -180,6 +200,7 @@ describe('ElementAttributeFilter', function() {
 				var filter = new Filter({}, {
 					stopPropagation: 'some value'
 				});
+
 				filter._attributesMatch = attributeMatchStub;
 				expect(filter.stopPropagation()).to.equal('some value');
 				expect(attributeMatchStub).to.be.called;
@@ -190,6 +211,7 @@ describe('ElementAttributeFilter', function() {
 				var filter = new Filter({}, {
 					stopPropagation: 'some value'
 				});
+
 				filter._attributesMatch = attributeMatchStub;
 				expect(filter.stopPropagation()).to.be.undefined;
 				expect(attributeMatchStub).to.be.called;

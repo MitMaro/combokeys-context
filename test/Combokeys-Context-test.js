@@ -1,10 +1,12 @@
-var rewire = require("rewire");
+// jscs:disable disallowAnonymousFunctions, requirePaddingNewLinesInObjects
+/* eslint-disable no-unused-expressions */
+'use strict';
+
+var rewire = require('rewire');
 var ComboKeysContext = rewire('../src/Combokeys-Context');
 
 describe('Combo Keys context', function() {
-
 	var comboKeysStub;
-
 	var targetStub;
 	var preventDefaultStub;
 	var stopPropagationStub;
@@ -27,12 +29,15 @@ describe('Combo Keys context', function() {
 
 	it('requires Combokeys instance in constructor', function() {
 		expect(function() {
-			new ComboKeysContext()
-		}).to.Throw(Error)
+			/*eslint-disable no-new */
+			new ComboKeysContext();
+			/*eslint-enable no-new */
+		}).to.Throw(Error);
 	});
 
 	it('can delete a binding', function() {
 		var context = new ComboKeysContext(comboKeysStub);
+
 		context._bindings = {
 			a: {
 				global: 'not a function',
@@ -63,9 +68,9 @@ describe('Combo Keys context', function() {
 	describe('registerPlugin', function() {
 		it('can register global plugins', function() {
 			var context = new ComboKeysContext(comboKeysStub);
-
 			var plugin1 = {};
 			var plugin2 = {};
+
 			context.registerPlugin(plugin1);
 			context.registerPlugin(plugin2);
 
@@ -73,10 +78,10 @@ describe('Combo Keys context', function() {
 		});
 		it('can register context plugins', function() {
 			var context = new ComboKeysContext(comboKeysStub);
-
 			var plugin1 = {};
 			var plugin2 = {};
 			var plugin3 = {};
+
 			context.registerPlugin(plugin1, 'foo');
 			context.registerPlugin(plugin2, 'foo');
 			context.registerPlugin(plugin3, 'bar');
@@ -87,8 +92,8 @@ describe('Combo Keys context', function() {
 	});
 
 	describe('._register', function() {
-
 		var context;
+
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
 		});
@@ -141,11 +146,13 @@ describe('Combo Keys context', function() {
 
 	describe('.bind', function() {
 		var context;
+
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
 		});
-		it('will bind key without context', function () {
+		it('will bind key without context', function() {
 			var callback = sinon.stub();
+
 			context._register = sinon.stub();
 			context.bind('alt+a', callback, 'keyup');
 
@@ -154,8 +161,9 @@ describe('Combo Keys context', function() {
 			);
 		});
 
-		it('will bind keys without context', function () {
+		it('will bind keys without context', function() {
 			var callback = sinon.stub();
+
 			context._register = sinon.stub();
 			context.bind(['alt+a', 'alt+b'], callback, 'keyup');
 
@@ -167,8 +175,9 @@ describe('Combo Keys context', function() {
 			);
 		});
 
-		it('will bind key with context', function () {
+		it('will bind key with context', function() {
 			var callback = sinon.stub();
+
 			context._register = sinon.stub();
 			context.bind('alt+a', 'context', callback, 'keyup');
 
@@ -180,6 +189,7 @@ describe('Combo Keys context', function() {
 
 	describe('.unbind', function() {
 		var context;
+
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
 		});
@@ -329,7 +339,6 @@ describe('Combo Keys context', function() {
 			expect(context._deleteBinding).to.not.be.called;
 		});
 
-
 		it('will unbind a key in context scope with other context registered', function() {
 			context._bindings = {
 				a: {
@@ -389,6 +398,7 @@ describe('Combo Keys context', function() {
 
 	describe('.unbindAll', function() {
 		var context;
+
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
 		});
@@ -423,19 +433,22 @@ describe('Combo Keys context', function() {
 	describe('context switching', function() {
 		it('will error on no context passed to switchContext', function() {
 			var context = new ComboKeysContext(comboKeysStub);
+
 			expect(context.switchContext).to.Throw(Error);
 		});
 
 		it('can switch context', function() {
 			var context = new ComboKeysContext(comboKeysStub);
+
 			context.switchContext('ABC');
 			expect(context._context).to.equal('ABC');
 			context.switchContext('DEF');
 			expect(context._context).to.equal('DEF');
 		});
 
-		it ('can clear context', function() {
+		it('can clear context', function() {
 			var context = new ComboKeysContext(comboKeysStub);
+
 			context._context = 'A Context';
 			context.clearContext();
 			expect(context._context).to.be.Null;
@@ -444,6 +457,7 @@ describe('Combo Keys context', function() {
 
 	describe('handle key events', function() {
 		var context;
+
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
 		});
@@ -500,7 +514,7 @@ describe('Combo Keys context', function() {
 			var eventStub;
 			var key = 'a';
 
-			beforeEach(function(){
+			beforeEach(function() {
 				globalStub = sinon.stub();
 				eventStub = {};
 				context._register(key, null, globalStub);
@@ -553,7 +567,7 @@ describe('Combo Keys context', function() {
 			var eventStub;
 			var key = 'a';
 
-			beforeEach(function(){
+			beforeEach(function() {
 				globalStub = sinon.stub();
 				eventStub = {};
 				context._register(key, null, globalStub);
@@ -604,6 +618,7 @@ describe('Combo Keys context', function() {
 
 	describe('._stopCallback', function() {
 		var context;
+
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
 		});
@@ -650,6 +665,7 @@ describe('Combo Keys context', function() {
 
 	describe('#_combinePlugins', function() {
 		var context;
+		
 		beforeEach(function() {
 			context = new ComboKeysContext(comboKeysStub);
 		});

@@ -1,3 +1,5 @@
+'use strict';
+
 var _ = {
 	isArray: require('lodash/lang/isArray')
 };
@@ -15,56 +17,58 @@ var _ = {
  * @param {boolean=} options.matchAll If true will match all attribute, else match one
  * @constructor
  */
-var ElementAttributeFilter = function(attributes, options) {
+function ElementAttributeFilter(attributes, options) {
 	var key;
-
-	options = options || {};
+	var opts = options || {};
 
 	this._attributes = {};
 
 	for (key in attributes) {
-		this._attributes[key] = _.isArray(attributes[key]) ? attributes[key] : [attributes[key]];
+		this._attributes[key] = _.isArray(attributes[key])? attributes[key]: [attributes[key]];
 	}
 
-	this._stopCallback = options.stopCallback;
-	this._preventDefault = options.preventDefault;
-	this._stopPropagation = options.stopPropagation;
+	this._stopCallback = opts.stopCallback;
+	this._preventDefault = opts.preventDefault;
+	this._stopPropagation = opts.stopPropagation;
 
-	if (typeof options.matchAll === 'undefined') {
+	if ('undefined' === typeof opts.matchAll) {
 		this._matchAll = false;
-	} else {
-		this._matchAll = options.matchAll;
 	}
-};
+	else {
+		this._matchAll = opts.matchAll;
+	}
+}
 
-ElementAttributeFilter.prototype.stopCallback = function(evt, element) {
+ElementAttributeFilter.prototype.stopCallback = function stopCallback(evt, element) {
 	if (this._stopCallback && this._attributesMatch(element)) {
 		return this._stopCallback;
 	}
 };
 
-ElementAttributeFilter.prototype.preventDefault = function(evt, element) {
+ElementAttributeFilter.prototype.preventDefault = function preventDefault(evt, element) {
 	if (this._preventDefault && this._attributesMatch(element)) {
 		return this._preventDefault;
 	}
 };
 
-ElementAttributeFilter.prototype.stopPropagation = function(evt, element) {
+ElementAttributeFilter.prototype.stopPropagation = function stopPropagation(evt, element) {
 	if (this._stopPropagation && this._attributesMatch(element)) {
 		return this._stopPropagation;
 	}
 };
 
-ElementAttributeFilter.prototype._attributesMatch = function(element) {
+ElementAttributeFilter.prototype._attributesMatch = function _attributesMatch(element) {
 	var key;
 	var attribute;
+
 	for (key in this._attributes) {
 		attribute = element.getAttribute(key);
 		if (this._attributes[key].indexOf(attribute) !== -1) {
 			if (!this._matchAll) {
 				return true;
 			}
-		} else {
+		}
+		else {
 			if (this._matchAll) {
 				return false;
 			}

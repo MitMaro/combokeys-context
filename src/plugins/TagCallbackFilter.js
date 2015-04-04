@@ -1,4 +1,4 @@
-var ComboKeysContext = require('../Combokeys-Context');
+'use strict';
 
 /**
  * Create a filter that will disable callbacks inside certain tags
@@ -10,39 +10,39 @@ var ComboKeysContext = require('../Combokeys-Context');
  * @param {Context.StopCallbackReturn=} options.stopCallback Value for stop callback on match
  * @constructor
  */
-var TagCallbackFilter = function(tagNames, options) {
+function TagCallbackFilter(tagNames, options) {
 
-	options = options || {};
+	var opts = options || {};
 
 	// clone the tag names
-	this._tagNames = tagNames.map(function(value) {
+	this._tagNames = tagNames.map(function tagNamesLowerCase(value) {
 		return value.toLowerCase();
 	});
 
-	this._stopCallback = options.stopCallback;
-	this._preventDefault = options.preventDefault;
-	this._stopPropagation = options.stopPropagation;
-};
+	this._stopCallback = opts.stopCallback;
+	this._preventDefault = opts.preventDefault;
+	this._stopPropagation = opts.stopPropagation;
+}
 
-TagCallbackFilter.prototype.stopCallback = function(evt, element) {
+TagCallbackFilter.prototype.stopCallback = function stopCallback(evt, element) {
 	if (this._stopCallback && this._attributesMatch(element)) {
 		return this._stopCallback;
 	}
 };
 
-TagCallbackFilter.prototype.preventDefault = function(evt, element) {
+TagCallbackFilter.prototype.preventDefault = function preventDefault(evt, element) {
 	if (this._preventDefault && this._attributesMatch(element)) {
 		return this._preventDefault;
 	}
 };
 
-TagCallbackFilter.prototype.stopPropagation = function(evt, element) {
+TagCallbackFilter.prototype.stopPropagation = function stopPropagation(evt, element) {
 	if (this._stopPropagation && this._attributesMatch(element)) {
 		return this._stopPropagation;
 	}
 };
 
-TagCallbackFilter.prototype._attributesMatch = function(evt, element) {
+TagCallbackFilter.prototype._attributesMatch = function _attributesMatch(evt, element) {
 	return this._tagNames.indexOf(element.tagName.toLowerCase()) !== -1;
 };
 
