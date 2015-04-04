@@ -25,7 +25,10 @@ browsers that works with ComboKeys as long as `Object.keys` is polyfilled where 
 
 ## Documentation
 
-### Full Usage
+### Full API Docs
+[ComboKeys Context JSDocs](http://www.mitmaro.ca/combokeys-context/documentation/latest/)
+
+### Basic Usage
 
 ```javascript
 var ComboKeys = require('combokeys');
@@ -79,16 +82,18 @@ comboKeysContext.reset();
 This library modifies `ComboKeys.stopCallback` to add support for
 plugins. By default this library will not stop a callback in input
 tags or respond to the `combokeys` class on an element. To add this
-support you can use the `TagCallbackFilter` and the `ClassNameFilter`
-plugins.
+support you can use the `TagCallbackFilter`, `ElementAttributeFilter`
+and the `ClassNameFilter` plugins.
 
     var comboKeysContext = new ComboKeysContext(new ComboKeys());
     comboKeysContext.registerPlugin(new TagCallbackFilter(['input', 'select', 'textarea']));
     comboKeysContext.registerPlugin(new ClassNameFilter(['combokeys'], false);
-
-### Full API Docs
-[ComboKeys Context JSDocs](http://www.mitmaro.ca/combokeys-context/documentation/latest/)
+    comboKeysContext.registerPlugin(new ElementAttributeFilter({
+        isContentEditable: 'true'
+    }, {
+        StopPropagationReturn: ComboKeysContext.STOP_CALLBACK
+    });
 
 ## License
 
-Combokeys Context is released under the MIT license. See LICENSE.
+Combokeys Context is released under the ISC license. See LICENSE.
