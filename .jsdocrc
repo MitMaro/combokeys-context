@@ -3,7 +3,7 @@
     "dictionaries": ["jsdoc", "closure"]
   },
   "source": {
-    "include": ["src/"]
+    "include": ["README.md", "index.js", "src/", "src/plugins"]
   },
   "plugins": [],
   "templates": {

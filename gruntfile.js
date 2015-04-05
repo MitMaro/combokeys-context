@@ -11,6 +11,11 @@ module.exports = function (grunt) {
 		{
 			browserName: 'internet explorer',
 			platform: 'Windows 7',
+			version: '9.0'
+		},
+		{
+			browserName: 'internet explorer',
+			platform: 'Windows 7',
 			version: '10.0'
 		},
 		{
@@ -41,10 +46,13 @@ module.exports = function (grunt) {
 					'max-duration': 15
 				}
 			}
-		}
+		},
+		watch: {}
 	});
 
 	grunt.loadNpmTasks('grunt-saucelabs');
 	grunt.loadNpmTasks('grunt-contrib-connect');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.registerTask('test', ['connect', 'saucelabs-mocha']);
+	grunt.registerTask("dev", ["connect", "watch"]);
 };

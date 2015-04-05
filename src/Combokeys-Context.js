@@ -1,10 +1,56 @@
-var isArray = require('./util/isArray');
+var _ = {
+	isArray: require('lodash/lang/isArray')
+};
+
+var eventTarget = require('cross-browser/Event/target');
+var preventDefault = require('cross-browser/Event/preventDefault');
+var stopPropagation = require('cross-browser/Event/stopPropagation');
+
+var yesForce = 'yes_force';
+var yes = 'yes';
+var no = 'no';
+var noForce = 'no_force';
 
 function wrapHandler(key, evt, combo) {
+	var i;
+	var target = eventTarget(evt);
+	var eventDefault = no;
+	var eventPropagation = no;
+	var result;
+
 	if (this._context && this._bindings[key].contexts[this._context]) {
 		this._bindings[key].contexts[this._context].call(this._comboKeys, evt, combo);
 	} else if (this._bindings[key].global) {
 		this._bindings[key].global.call(this._comboKeys, evt, combo);
+	}
+
+	for (i = 0; i < this._activePlugins.length; i++) {
+		if (
+			eventDefault !== yesForce && eventDefault !== noForce &&
+			typeof this._activePlugins[i].preventDefault === 'function'
+		) {
+			result = this._activePlugins[i].preventDefault(evt, target, combo, this._context);
+			if (typeof result !== 'undefined') {
+				eventDefault = result;
+			}
+		}
+		if (
+			eventPropagation !== yesForce && eventPropagation !== noForce &&
+			typeof this._activePlugins[i].stopPropagation === 'function'
+		) {
+			result = this._activePlugins[i].stopPropagation(evt, target, combo, this._context);
+			if (typeof result !== 'undefined') {
+				eventPropagation = result;
+			}
+		}
+	}
+
+	if (eventDefault === yes || eventDefault === yesForce) {
+		preventDefault(evt);
+	}
+
+	if (eventPropagation === yes || eventPropagation === yesForce) {
+		stopPropagation(evt);
 	}
 }
 
@@ -20,7 +66,75 @@ var Context = function(comboKeys) {
 	this._bindings = {};
 	this._context = null;
 	this._comboKeys = comboKeys;
+	this._plugins = {
+		global: [],
+		contexts: {}
+	};
+	this._activePlugins = [];
+
+	this._comboKeys.stopCallback = this._stopCallback.bind(this);
 };
+
+/**
+ * Force preventDefault to be called
+ * @constant
+ */
+Context.PREVENT_DEFAULT_FORCE = yesForce;
+/**
+ * preventDefault may be called
+ * @constant
+ */
+Context.PREVENT_DEFAULT = yes;
+/**
+ * preventDefault may not be called
+ * @constant
+ */
+Context.ALLOW_DEFAULT = no;
+/**
+ * Force preventDefault to be called
+ * @constant
+ */
+Context.ALLOW_DEFAULT_FORCE = noForce;
+/**
+ * Force stopPropagation to be called
+ * @constant
+ */
+Context.STOP_PROPAGATION_FORCE = yesForce;
+/**
+ * stopPropagation may be called
+ * @constant
+ */
+Context.STOP_PROPAGATION = yes;
+/**
+ * stopPropagation may not be called
+ * @constant
+ */
+Context.ALLOW_PROPAGATION = no;
+/**
+ * Force stopPropagation not to be called
+ * @constant
+ */
+Context.ALLOW_PROPAGATION_FORCE = noForce;
+/**
+ * Force callback to not be called
+ * @constant
+ */
+Context.STOP_CALLBACK_FORCE = yesForce;
+/**
+ * Callback may not be called
+ * @constant
+ */
+Context.STOP_CALLBACK = yes;
+/**
+ * Callback may be called
+ * @constant
+ */
+Context.ALLOW_CALLBACK = no;
+/**
+ * Force callback to be called
+ * @constant
+ */
+Context.ALLOW_CALLBACK_FORCE = noForce;
 
 /**
  * Bind keys to an action with an optional context
@@ -31,7 +145,7 @@ var Context = function(comboKeys) {
  */
 Context.prototype.bind = function(key, context, callback, action) {
 	var i;
-	var keys = isArray(key) ? key : [key];
+	var keys = _.isArray(key) ? key : [key];
 
 	// if context is a function we assume it's the callback and shift params
 	if (typeof context === 'function') {
@@ -53,7 +167,7 @@ Context.prototype.bind = function(key, context, callback, action) {
 Context.prototype.unbind = function(key, context) {
 	var i;
 	var binding;
-	var keys = isArray(key) ? key : [key];
+	var keys = _.isArray(key) ? key : [key];
 
 	for (i = 0; i < keys.length; ++i) {
 		// skip bindings that don't exist
@@ -83,7 +197,7 @@ Context.prototype.unbind = function(key, context) {
 Context.prototype.unbindAll = function(key) {
 
 	var i;
-	var keys = isArray(key) ? key : [key];
+	var keys = _.isArray(key) ? key : [key];
 
 	for (i = 0; i < keys.length; ++i) {
 
@@ -103,6 +217,9 @@ Context.prototype.reset = function() {
 	this._comboKeys.reset();
 	this._bindings = {};
 	this._context = null;
+	this._plugins.global = [];
+	this._plugins.contexts = {};
+	this._activePlugins = [];
 };
 
 /**
@@ -114,6 +231,7 @@ Context.prototype.switchContext = function(context) {
 		throw new Error('CombokeysContext: switchContext expects a context to be passed');
 	}
 	this._context = context;
+	this._combinePlugins();
 };
 
 /**
@@ -121,6 +239,25 @@ Context.prototype.switchContext = function(context) {
  */
 Context.prototype.clearContext = function() {
 	this._context = null;
+	this._combinePlugins();
+};
+
+/**
+ * Register a plugin that follows the {@link Plugin} interface
+ *
+ * @param {ContextPlugin} plugin A plugin to be registered
+ */
+Context.prototype.registerPlugin = function(plugin, context) {
+	if (typeof context === 'undefined') {
+		this._plugins.global.push(plugin);
+	}
+	else {
+		if (typeof this._plugins.contexts[context] === 'undefined') {
+			this._plugins.contexts[context] = [];
+		}
+		this._plugins.contexts[context].push(plugin);
+	}
+	this._combinePlugins();
 };
 
 Context.prototype._deleteBinding = function(key) {
@@ -142,6 +279,51 @@ Context.prototype._register = function(key, context, callback, action) {
 		this._bindings[key].contexts[context] = callback;
 	} else {
 		this._bindings[key].global = callback;
+	}
+};
+
+Context.prototype._stopCallback = function(evt, element, combo) {
+	var i;
+	var result;
+	var stopCallback = no;
+	for (i = 0; i < this._activePlugins.length; i++) {
+		if (typeof this._activePlugins[i].stopCallback === 'function') {
+			result = this._activePlugins[i].stopCallback(evt, eventTarget(evt), combo, this._context);
+			// if force yes or no return now
+			if (result === yesForce) {
+				return true;
+			}
+			else if (result === noForce) {
+				return false;
+			}
+			if (typeof result !== 'undefined') {
+				stopCallback = result;
+			}
+		}
+	}
+
+	return stopCallback === yes;
+};
+
+Context.prototype._combinePlugins = function() {
+	var globalPluginLength = this._plugins.global.length;
+	var contextPluginLength = 0;
+	var i = 0;
+
+	if (this._context && typeof this._plugins.contexts[this._context] !== 'undefined') {
+		contextPluginLength = this._plugins.contexts[this._context].length;
+	}
+	var length = Math.max(globalPluginLength, contextPluginLength);
+
+	this._activePlugins = [];
+	while (i < length) {
+		if (i < globalPluginLength) {
+			this._activePlugins.push(this._plugins.global[i]);
+		}
+		if (i < contextPluginLength) {
+			this._activePlugins.push(this._plugins.contexts[this._context][i]);
+		}
+		i++;
 	}
 };
 

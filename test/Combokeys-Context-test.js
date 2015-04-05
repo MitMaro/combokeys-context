@@ -1,9 +1,13 @@
-
-var ComboKeysContext = require('../src/Combokeys-Context');
+var rewire = require("rewire");
+var ComboKeysContext = rewire('../src/Combokeys-Context');
 
 describe('Combo Keys context', function() {
 
 	var comboKeysStub;
+
+	var targetStub;
+	var preventDefaultStub;
+	var stopPropagationStub;
 
 	beforeEach(function() {
 		comboKeysStub = {
@@ -11,12 +15,20 @@ describe('Combo Keys context', function() {
 			unbind: sinon.stub(),
 			reset: sinon.stub()
 		};
+
+		targetStub = sinon.stub();
+		preventDefaultStub = sinon.stub();
+		stopPropagationStub = sinon.stub();
+
+		ComboKeysContext.__set__('eventTarget', targetStub);
+		ComboKeysContext.__set__('preventDefault', preventDefaultStub);
+		ComboKeysContext.__set__('stopPropagation', stopPropagationStub);
 	});
 
 	it('requires Combokeys instance in constructor', function() {
 		expect(function() {
 			new ComboKeysContext()
-		}).to.throw(Error)
+		}).to.Throw(Error)
 	});
 
 	it('can delete a binding', function() {
@@ -40,10 +52,41 @@ describe('Combo Keys context', function() {
 
 		expect(comboKeysStub.reset).to.be.called;
 		expect(context._bindings).to.be.empty;
-		expect(context._context).to.be.null;
+		expect(context._context).to.be.Null;
+		expect(context._plugins).to.eql({
+			global: [],
+			contexts: {}
+		});
+		expect(context._activePlugins).to.eql([]);
 	});
 
-	describe('#_register', function() {
+	describe('registerPlugin', function() {
+		it('can register global plugins', function() {
+			var context = new ComboKeysContext(comboKeysStub);
+
+			var plugin1 = {};
+			var plugin2 = {};
+			context.registerPlugin(plugin1);
+			context.registerPlugin(plugin2);
+
+			expect(context._plugins.global).to.be.eql([plugin1, plugin2]);
+		});
+		it('can register context plugins', function() {
+			var context = new ComboKeysContext(comboKeysStub);
+
+			var plugin1 = {};
+			var plugin2 = {};
+			var plugin3 = {};
+			context.registerPlugin(plugin1, 'foo');
+			context.registerPlugin(plugin2, 'foo');
+			context.registerPlugin(plugin3, 'bar');
+
+			expect(context._plugins.contexts.foo).to.be.eql([plugin1, plugin2]);
+			expect(context._plugins.contexts.bar).to.be.eql([plugin3]);
+		});
+	});
+
+	describe('._register', function() {
 
 		var context;
 		beforeEach(function() {
@@ -109,7 +152,6 @@ describe('Combo Keys context', function() {
 			expect(context._register).to.be.calledWith(
 				'alt+a', null, callback, 'keyup'
 			);
-
 		});
 
 		it('will bind keys without context', function () {
@@ -123,9 +165,7 @@ describe('Combo Keys context', function() {
 			expect(context._register).to.be.calledWith(
 				'alt+b', null, callback, 'keyup'
 			);
-
 		});
-
 
 		it('will bind key with context', function () {
 			var callback = sinon.stub();
@@ -383,7 +423,7 @@ describe('Combo Keys context', function() {
 	describe('context switching', function() {
 		it('will error on no context passed to switchContext', function() {
 			var context = new ComboKeysContext(comboKeysStub);
-			expect(context.switchContext).to.throw(Error);
+			expect(context.switchContext).to.Throw(Error);
 		});
 
 		it('can switch context', function() {
@@ -398,7 +438,7 @@ describe('Combo Keys context', function() {
 			var context = new ComboKeysContext(comboKeysStub);
 			context._context = 'A Context';
 			context.clearContext();
-			expect(context._context).to.be.null;
+			expect(context._context).to.be.Null;
 		});
 	});
 
@@ -453,6 +493,211 @@ describe('Combo Keys context', function() {
 			context._context = 'A';
 			context._bindings[key].handler(evt, key);
 			expect(globalCallback).to.be.calledWith(evt, key);
+		});
+
+		describe('preventDefault plugin support', function() {
+			var globalStub;
+			var eventStub;
+			var key = 'a';
+
+			beforeEach(function(){
+				globalStub = sinon.stub();
+				eventStub = {};
+				context._register(key, null, globalStub);
+			});
+
+			it('without preventDefault function defined', function() {
+				context.registerPlugin({});
+				context._bindings[key].handler(eventStub, key);
+				expect(preventDefaultStub).to.not.be.called;
+			});
+
+			it('without preventDefault that returns undefined', function() {
+				context.registerPlugin({preventDefault: sinon.stub().returns('yes')});
+				context.registerPlugin({preventDefault: sinon.stub()});
+				context._bindings[key].handler(eventStub, key);
+				expect(preventDefaultStub).to.be.called;
+			});
+
+			it('without preventDefault that returns yes', function() {
+				context.registerPlugin({preventDefault: sinon.stub().returns('yes')});
+				context._bindings[key].handler(eventStub, key);
+				expect(preventDefaultStub).to.be.called;
+			});
+
+			it('without preventDefault that returns no', function() {
+				context.registerPlugin({preventDefault: sinon.stub().returns('no')});
+				context._bindings[key].handler(eventStub, key);
+				expect(preventDefaultStub).to.not.be.called;
+			});
+
+			it('without preventDefault that returns forced yes', function() {
+				context.registerPlugin({preventDefault: sinon.stub().returns('yes_force')});
+				context.registerPlugin({preventDefault: sinon.stub()});
+				context._bindings[key].handler(eventStub, key);
+				expect(preventDefaultStub).to.be.called;
+				expect(context._plugins.global[1].preventDefault).to.not.be.called;
+			});
+
+			it('without preventDefault that returns forced no', function() {
+				context.registerPlugin({preventDefault: sinon.stub().returns('no_force')});
+				context.registerPlugin({preventDefault: sinon.stub()});
+				context._bindings[key].handler(eventStub, key);
+				expect(preventDefaultStub).to.not.be.called;
+				expect(context._plugins.global[1].preventDefault).to.not.be.called;
+			});
+		});
+
+		describe('stopPropagation plugin support', function() {
+			var globalStub;
+			var eventStub;
+			var key = 'a';
+
+			beforeEach(function(){
+				globalStub = sinon.stub();
+				eventStub = {};
+				context._register(key, null, globalStub);
+			});
+
+			it('without stopPropagation function defined', function() {
+				context.registerPlugin({});
+				context._bindings[key].handler(eventStub, key);
+				expect(stopPropagationStub).to.not.be.called;
+			});
+
+			it('without stopPropagation that returns undefined', function() {
+				context.registerPlugin({stopPropagation: sinon.stub().returns('yes')});
+				context.registerPlugin({stopPropagation: sinon.stub()});
+				context._bindings[key].handler(eventStub, key);
+				expect(stopPropagationStub).to.be.called;
+			});
+
+			it('without stopPropagation that returns yes', function() {
+				context.registerPlugin({stopPropagation: sinon.stub().returns('yes')});
+				context._bindings[key].handler(eventStub, key);
+				expect(stopPropagationStub).to.be.called;
+			});
+
+			it('without stopPropagation that returns no', function() {
+				context.registerPlugin({stopPropagation: sinon.stub().returns('no')});
+				context._bindings[key].handler(eventStub, key);
+				expect(stopPropagationStub).to.not.be.called;
+			});
+
+			it('without stopPropagation that returns forced yes', function() {
+				context.registerPlugin({stopPropagation: sinon.stub().returns('yes_force')});
+				context.registerPlugin({stopPropagation: sinon.stub()});
+				context._bindings[key].handler(eventStub, key);
+				expect(stopPropagationStub).to.be.called;
+				expect(context._plugins.global[1].stopPropagation).to.not.be.called;
+			});
+
+			it('without stopPropagation that returns forced no', function() {
+				context.registerPlugin({stopPropagation: sinon.stub().returns('no_force')});
+				context.registerPlugin({stopPropagation: sinon.stub()});
+				context._bindings[key].handler(eventStub, key);
+				expect(stopPropagationStub).to.not.be.called;
+				expect(context._plugins.global[1].stopPropagation).to.not.be.called;
+			});
+		});
+	});
+
+	describe('._stopCallback', function() {
+		var context;
+		beforeEach(function() {
+			context = new ComboKeysContext(comboKeysStub);
+		});
+
+		it('handles no plugins registered', function() {
+			expect(context._stopCallback()).to.be.False;
+		});
+
+		it('handles plugin without stopCallback', function() {
+			context.registerPlugin({});
+			expect(context._stopCallback()).to.be.False;
+		});
+
+		it('handles plugin with stopCallback that returns undefined', function() {
+			context.registerPlugin({stopCallback: sinon.stub().returns('yes')});
+			context.registerPlugin({stopCallback: sinon.stub()});
+			expect(context._stopCallback()).to.be.True;
+		});
+
+		it('handles plugin with stopCallback that returns yes', function() {
+			context.registerPlugin({stopCallback: sinon.stub().returns('yes')});
+			expect(context._stopCallback()).to.be.True;
+		});
+
+		it('handles plugin with stopCallback that returns no', function() {
+			context.registerPlugin({stopCallback: sinon.stub().returns('no')});
+			expect(context._stopCallback()).to.be.False;
+		});
+
+		it('handles plugin with stopCallback that returns force yes', function() {
+			context.registerPlugin({stopCallback: sinon.stub().returns('yes_force')});
+			context.registerPlugin({stopCallback: sinon.stub().returns('no')});
+			expect(context._stopCallback()).to.be.True;
+			expect(context._plugins.global[1].stopCallback).to.not.be.called;
+		});
+
+		it('handles plugin with stopCallback that returns force no', function() {
+			context.registerPlugin({stopCallback: sinon.stub().returns('no_force')});
+			context.registerPlugin({stopCallback: sinon.stub().returns('no')});
+			expect(context._stopCallback()).to.be.False;
+			expect(context._plugins.global[1].stopCallback).to.not.be.called;
+		});
+	});
+
+	describe('#_combinePlugins', function() {
+		var context;
+		beforeEach(function() {
+			context = new ComboKeysContext(comboKeysStub);
+		});
+
+		it('should combine with only global plugins', function() {
+			context._plugins = {
+				global: [
+					{}, {}
+				],
+				contexts: {}
+			};
+			context._combinePlugins();
+			expect(context._activePlugins).to.eql([
+				context._plugins.global[0],
+				context._plugins.global[1]
+			]);
+		});
+
+		it('should combine with only context plugins', function() {
+			context._plugins = {
+				global: [],
+				contexts: {
+					foo: [{}, {}]
+				}
+			};
+			context._context = 'foo';
+			context._combinePlugins();
+			expect(context._activePlugins).to.eql([
+				context._plugins.contexts.foo[0],
+				context._plugins.contexts.foo[1]
+			]);
+		});
+
+		it('should combine with both context and global plugins', function() {
+			context._plugins = {
+				global: [{a: 'A'}, {b: 'B'}],
+				contexts: {
+					foo: [{c: 'C'}, {d: 'D'}]
+				}
+			};
+			context._context = 'foo';
+			context._combinePlugins();
+			expect(context._activePlugins).to.eql([
+				context._plugins.global[0],
+				context._plugins.contexts.foo[0],
+				context._plugins.global[1],
+				context._plugins.contexts.foo[1]
+			]);
 		});
 	});
 });

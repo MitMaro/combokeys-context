@@ -1,0 +1,73 @@
+/**
+ * Plugin Interface
+ * @interface ContextPlugin
+ */
+function ContextPlugin() {} // needed for Google Closure support
+
+/**
+ * Will prevent the default action from occurring if the plugin returns
+ * a true value for this function. A false value ensure the callback is
+ * not stopped, even if other plugins return true. Not returning any
+ * value will make this callback have no effect.
+ *
+ * @function ContextPlugin#stopPropagation
+ * @param {Event} event The DOM event
+ * @param {Element} element The DOM element
+ * @param {string} keyCombo The key combination
+ * @param {string} context The current context
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Event/stopPropagation|MDN#Event.stopPropagation}
+ *
+ * @returns {Context.StopPropagationReturn}
+ */
+
+/**
+ * Will prevent the default action from occurring if the plugin returns
+ * a true value for this function. A false value ensure the callback is
+ * not stopped, even if other plugins return true. Not returning any
+ * value will make this callback have no effect.
+ *
+ * @function ContextPlugin#preventDefault
+ * @param {Event} event The DOM event
+ * @param {Element} element The DOM element
+ * @param {string} keyCombo The key combination
+ * @param {string} context The current context
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault|MDN#Event.preventDefault}
+ *
+ * @returns {Context.PreventDefaultReturn}
+ */
+
+/**
+ * Will stop the callback from being called if the plugin returns a true
+ * value for this function. A false value ensure the callback is not
+ * stopped, even if other plugins return true. Not returning any value
+ * will make this callback have no effect.
+ *
+ * @function ContextPlugin#stopCallback
+ * @param {Event} event The DOM event
+ * @param {Element} element The DOM element
+ * @param {string} keyCombo The key combination
+ * @param {string} context The current context
+ *
+ * @returns {Context.StopCallbackReturn}
+ */
+
+/**
+ * @typedef {(Context.PREVENT_DEFAULT_FORCE |
+ * Context.PREVENT_DEFAULT |
+ * Context.ALLOW_DEFAULT |
+ * Context.ALLOW_DEFAULT_FORCE)} Context.PreventDefaultReturn
+ */
+
+/**
+ * @typedef {(Context.STOP_PROPAGATION_FORCE |
+ * Context.STOP_PROPAGATION |
+ * Context.ALLOW_PROPAGATION |
+ * Context.ALLOW_PROPAGATION_FORCE)} Context.StopPropagationReturn
+ */
+
+/**
+ * @typedef {(Context.STOP_CALLBACK_FORCE |
+ * Context.STOP_CALLBACK |
+ * Context.ALLOW_CALLBACK |
+ * Context.ALLOW_CALLBACK_FORCE)} Context.StopCallbackReturn
+ */

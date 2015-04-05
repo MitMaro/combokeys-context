@@ -16,7 +16,7 @@ system.
 
 ## Compatibility
 
-Tested against the latest version of Google Chrome, latest Firefox, and Internet Explorer 10 and 11. Should work with all
+Tested against the latest version of Google Chrome, latest Firefox, and Internet Explorer 9, 10 and 11. Should work with all
 browsers that works with ComboKeys as long as `Object.keys` is polyfilled where needed.
 
 ## Install
@@ -25,7 +25,10 @@ browsers that works with ComboKeys as long as `Object.keys` is polyfilled where 
 
 ## Documentation
 
-### Full Usage
+### Full API Docs
+[ComboKeys Context JSDocs](http://www.mitmaro.ca/combokeys-context/documentation/latest/)
+
+### Basic Usage
 
 ```javascript
 var ComboKeys = require('combokeys');
@@ -33,6 +36,9 @@ var ComboKeysContext = require('combokeys-context');
 
 var comboKeys = new ComboKeys(document);
 var comboKeysContext = new ComboKeysContext(comboKeys);
+
+// register a plugin
+comboKeysContext.registerPlugin(new ComboKeysContext.plugins.TagCallbackFilter(['input']);
 
 // define callbacks
 var callbackGlobal = function(evt, key) {
@@ -71,9 +77,23 @@ comboKeysContext.unbindAll('alt+b');
 comboKeysContext.reset();
 ```
 
-### Full API Docs
-[ComboKeys Context JSDocs](http://www.mitmaro.ca/combokeys-context/documentation/latest/)
+### ComboKeys Compatibility
+
+This library modifies `ComboKeys.stopCallback` to add support for
+plugins. By default this library will not stop a callback in input
+tags or respond to the `combokeys` class on an element. To add this
+support you can use the `TagCallbackFilter`, `ElementAttributeFilter`
+and the `ClassNameFilter` plugins.
+
+    var comboKeysContext = new ComboKeysContext(new ComboKeys());
+    comboKeysContext.registerPlugin(new TagCallbackFilter(['input', 'select', 'textarea']));
+    comboKeysContext.registerPlugin(new ClassNameFilter(['combokeys'], false);
+    comboKeysContext.registerPlugin(new ElementAttributeFilter({
+        isContentEditable: 'true'
+    }, {
+        StopPropagationReturn: ComboKeysContext.STOP_CALLBACK
+    });
 
 ## License
 
-Combokeys Context is released under the MIT license. See LICENSE.
+Combokeys Context is released under the ISC license. See LICENSE.
