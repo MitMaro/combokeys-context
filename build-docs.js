@@ -1,8 +1,8 @@
-
+// jscs:disable
+/* eslint-disable */
 require('shelljs/global');
 
-var version = require('./package.json').version;
-
+var i;
 var tags = process.argv.splice(2);
 
 if (exec('git diff-index --quiet HEAD --').code !== 0) {
@@ -10,20 +10,19 @@ if (exec('git diff-index --quiet HEAD --').code !== 0) {
 	process.exit(1);
 }
 
-for (var i = 0; i < tags.length; i++) {
+for (i = 0; i < tags.length; i++) {
 	gitCheckoutTag(tags[i]);
 	if (tags[i] === 'master') {
 		genDocs('latest');
-	} else {
+	}
+	else {
 		genDocs(tags[i]);
 	}
 }
 
 function gitCheckoutTag(tag) {
 	if (exec('git rev-parse ' + tag, {silent: true}).code === 0) {
-		if (exec('git checkout ' + tag, {silent: true}).code === 0) {
-		}
-		else {
+		if (exec('git checkout ' + tag, {silent: true}).code !== 0) {
 			console.log('Could not checkout the tag, ' + tag + ': skipping');
 			process.exit(1);
 		}

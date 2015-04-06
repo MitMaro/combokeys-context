@@ -1,4 +1,6 @@
-module.exports = function (grunt) {
+'use strict';
+
+module.exports = function Grunt(grunt) {
 	var browsers = [
 		{
 			browserName: 'chrome',
@@ -43,7 +45,7 @@ module.exports = function (grunt) {
 					concurrency: 3,
 					browsers: browsers,
 					testname: 'mocha tests',
-					'max-duration': 15
+					'max-duration': 60
 				}
 			}
 		},
@@ -54,5 +56,5 @@ module.exports = function (grunt) {
 	grunt.loadNpmTasks('grunt-contrib-connect');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.registerTask('test', ['connect', 'saucelabs-mocha']);
-	grunt.registerTask("dev", ["connect", "watch"]);
+	grunt.registerTask('dev', ['connect', 'watch']);
 };
