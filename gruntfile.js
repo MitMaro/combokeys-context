@@ -45,7 +45,7 @@ module.exports = function Grunt(grunt) {
 					concurrency: 3,
 					browsers: browsers,
 					testname: 'mocha tests',
-					'max-duration': 15
+					'max-duration': 60
 				}
 			}
 		},
