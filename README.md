@@ -85,14 +85,21 @@ tags or respond to the `combokeys` class on an element. To add this
 support you can use the `TagCallbackFilter`, `ElementAttributeFilter`
 and the `ClassNameFilter` plugins.
 
-    var comboKeysContext = new ComboKeysContext(new ComboKeys());
-    comboKeysContext.registerPlugin(new TagCallbackFilter(['input', 'select', 'textarea']));
-    comboKeysContext.registerPlugin(new ClassNameFilter(['combokeys'], false);
-    comboKeysContext.registerPlugin(new ElementAttributeFilter({
-        isContentEditable: 'true'
-    }, {
-        StopPropagationReturn: ComboKeysContext.STOP_CALLBACK
-    });
+```javascript
+var comboKeysContext = new ComboKeysContext(new ComboKeys());
+var options = {
+    stopPropagation: ComboKeysContext.STOP_CALLBACK
+};
+comboKeysContext.registerPlugin(
+    new TagCallbackFilter(['input', 'select', 'textarea'], options)
+);
+comboKeysContext.registerPlugin(
+    new ClassNameFilter(['combokeys'], options)
+);
+comboKeysContext.registerPlugin(new ElementAttributeFilter({
+    isContentEditable: 'true'
+}, options));
+```
 
 ## License
 
