@@ -12,5 +12,6 @@ env:
   global:
     - secure: e/8M6PFtQAAO/4gFnhoGhBFPWK1e4JHH4FXX6aoMcd7sNPU64WoKNghO7MQBL4HILd5RiUdaEN+G4RHClWYBhcgBmb42ybJ/e23/zxTajD0sa5s3fGHuGvRc565fXN/yuezDJ9JZRhZmQQyGZq1m8bi++V9xTIlonlvYpeyYWDA=
     - secure: BHpw9YPgT+OK89KW5JeRhTnlkRc4KlwGgq92F7aMyituylPuhbmu8/7i7lO6Zdhge9k3enr+KDYNmvCsqurh1XNmKbrpqaYtyait5XOVzfT3cLYDSJ3Ob+aNpQftCVD0+4KEeXVfctTRBEDXGzgLQ5JGwf7YSCIMzITBFM32gAU=
+sudo: false
 addons:
   sauce_connect: true
