@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-  - "0.10"
+  - "4"
 before_script:
   - npm install grunt-cli grunt grunt-saucelabs grunt-contrib-connect grunt-contrib-watch
   - npm install coveralls html-webpack-plugin webpack ecstatic

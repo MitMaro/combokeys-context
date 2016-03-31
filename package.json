@@ -27,9 +27,8 @@
     "mousetrap"
   ],
   "devDependencies": {
-    "chai": "^2.1.2",
-    "inject-loader": "^1.0.0",
-    "istanbul": "^0.3.7",
+    "chai": "^3.5.0",
+    "istanbul": "^0.4.2",
     "mocha": "^2.1.0",
     "shelljs": "^0.4.0",
     "rewire": "^2.3.1",
@@ -39,6 +38,6 @@
   },
   "dependencies": {
     "cross-browser": "^0.1.0",
-    "lodash": "^3.5.0"
+    "isarray": "^1.0.0"
   }
 }

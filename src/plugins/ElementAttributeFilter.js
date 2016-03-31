@@ -1,8 +1,6 @@
 'use strict';
 
-var _ = {
-	isArray: require('lodash/lang/isArray')
-};
+var isArray = require('isarray');
 
 /**
  * Create a filter that will enable/disable callbacks from certain class names
@@ -24,7 +22,7 @@ function ElementAttributeFilter(attributes, options) {
 	this._attributes = {};
 
 	for (key in attributes) {
-		this._attributes[key] = _.isArray(attributes[key])? attributes[key]: [attributes[key]];
+		this._attributes[key] = isArray(attributes[key])? attributes[key]: [attributes[key]];
 	}
 
 	this._stopCallback = opts.stopCallback;
