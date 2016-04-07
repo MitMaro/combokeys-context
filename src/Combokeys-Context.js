@@ -1,9 +1,5 @@
 'use strict';
-
-var _ = {
-	isArray: require('lodash/lang/isArray')
-};
-
+var isArray = require('isarray');
 var eventTarget = require('cross-browser/Event/target');
 var preventDefault = require('cross-browser/Event/preventDefault');
 var stopPropagation = require('cross-browser/Event/stopPropagation');
@@ -148,7 +144,7 @@ Context.ALLOW_CALLBACK_FORCE = noForce;
  */
 Context.prototype.bind = function bind(key, context, callback, action) {
 	var i;
-	var keys = _.isArray(key)? key: [key];
+	var keys = isArray(key)? key: [key];
 
 	// if context is a function we assume it's the callback and shift params
 	if (typeof context === 'function') {
@@ -170,7 +166,7 @@ Context.prototype.bind = function bind(key, context, callback, action) {
 Context.prototype.unbind = function unbind(key, context) {
 	var i;
 	var binding;
-	var keys = _.isArray(key)? key: [key];
+	var keys = isArray(key)? key: [key];
 
 	for (i = 0; i < keys.length; ++i) {
 		// skip bindings that don't exist
@@ -201,7 +197,7 @@ Context.prototype.unbind = function unbind(key, context) {
 Context.prototype.unbindAll = function unbindAll(key) {
 
 	var i;
-	var keys = _.isArray(key)? key: [key];
+	var keys = isArray(key)? key: [key];
 
 	for (i = 0; i < keys.length; ++i) {
 
