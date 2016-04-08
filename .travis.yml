@@ -2,7 +2,7 @@ language: node_js
 node_js:
   - "4"
 before_script:
-  - npm install grunt-cli grunt grunt-saucelabs grunt-contrib-connect grunt-contrib-watch
+  - npm install grunt-cli grunt@0.4 grunt-saucelabs grunt-contrib-connect grunt-contrib-watch
   - npm install coveralls html-webpack-plugin webpack ecstatic
   - webpack --config webpack.test.js
 script:
