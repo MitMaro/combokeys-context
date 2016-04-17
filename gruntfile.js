@@ -42,7 +42,7 @@ module.exports = function Grunt(grunt) {
 					urls: ['http://127.0.0.1:9999/index.html'],
 					tunnelTimeout: 5,
 					build: process.env.TRAVIS_JOB_ID,
-					concurrency: 3,
+					concurrency: 1,
 					browsers: browsers,
 					testname: 'mocha tests',
 					'max-duration': 60
