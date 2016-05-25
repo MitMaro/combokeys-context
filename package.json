@@ -1,6 +1,6 @@
 {
   "name": "combokeys-context",
-  "version": "2.0.0-beta1",
+  "version": "2.0.0-beta3",
   "author": "Tim Oram <mitmaro@gmail.com> (http://www.mitmaro.ca)",
   "contributors": [],
   "description": "Wrapper around Combokeys that provides support for context/scope.",
@@ -29,7 +29,7 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.2",
-    "mocha": "^2.1.0",
+    "mocha": "^2.5.1",
     "shelljs": "^0.7.0",
     "rewire": "^2.3.1",
     "rewire-webpack": "^1.0.0",
