@@ -29,10 +29,10 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.2",
-    "mocha": "^2.5.1",
-    "shelljs": "^0.7.0",
+    "mocha": "^2.5.3",
     "rewire": "^2.3.1",
     "rewire-webpack": "^1.0.0",
+    "shelljs": "^0.7.0",
     "sinon": "^1.14.1",
     "sinon-chai": "^2.7.0"
   },
