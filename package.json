@@ -38,6 +38,6 @@
   },
   "dependencies": {
     "cross-browser": "^0.1.0",
-    "isarray": "^1.0.0"
+    "isarray": "^2.0.0"
   }
 }
