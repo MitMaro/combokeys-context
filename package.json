@@ -34,7 +34,7 @@
     "rewire-webpack": "^1.0.0",
     "shelljs": "^0.7.0",
     "sinon": "^1.14.1",
-    "sinon-chai": "^2.7.0"
+    "sinon-chai": "^2.10.0"
   },
   "dependencies": {
     "cross-browser": "^0.1.0",
